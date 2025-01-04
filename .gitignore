@@ -1,0 +1,28 @@
+# Visual Studio
+.vs
+
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# Appsettings
+appsettings.*.json
+!appsettings.Example.json
+
+# Logs
+*.log
+
+# Coverage files
+coverage/
+*.lock
+
+# User specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+/PlanYourTravel.WebApi/Controllers/WeatherForecastController.cs
+/PlanYourTravel.WebApi/PlanYourTravel.WebApi.http
+/PlanYourTravel.WebApi/appsettings.json
+/PlanYourTravel.WebApi/WeatherForecast.cs
