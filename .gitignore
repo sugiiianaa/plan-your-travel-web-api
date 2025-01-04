@@ -1,11 +1,18 @@
 # Visual Studio
 .vs
 
+# Github
+.github
+
 # Build output
 [Bb]in/
 [Oo]bj/
 
+# Migrations
+Migrations/
+
 # Appsettings
+appsettings.json
 appsettings.*.json
 !appsettings.Example.json
 
@@ -22,7 +29,3 @@ coverage/
 *.suo
 *.userosscache
 *.sln.docstates
-/PlanYourTravel.WebApi/Controllers/WeatherForecastController.cs
-/PlanYourTravel.WebApi/PlanYourTravel.WebApi.http
-/PlanYourTravel.WebApi/appsettings.json
-/PlanYourTravel.WebApi/WeatherForecast.cs

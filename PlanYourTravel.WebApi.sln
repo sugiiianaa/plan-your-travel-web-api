@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanYourTravel.Application"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanYourTravel.Domain", "PlanYourTravel.Domain\PlanYourTravel.Domain.csproj", "{0D93D426-A55D-491B-9539-2B58507A7E3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanYourTravel.Infrastructure", "PlanYourTravel.Infrastructure\PlanYourTravel.Infrastructure.csproj", "{119201B1-9122-47C7-9C68-8D6179107C6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{0D93D426-A55D-491B-9539-2B58507A7E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D93D426-A55D-491B-9539-2B58507A7E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D93D426-A55D-491B-9539-2B58507A7E3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{119201B1-9122-47C7-9C68-8D6179107C6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{119201B1-9122-47C7-9C68-8D6179107C6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{119201B1-9122-47C7-9C68-8D6179107C6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{119201B1-9122-47C7-9C68-8D6179107C6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

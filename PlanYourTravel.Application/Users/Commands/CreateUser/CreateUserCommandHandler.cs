@@ -1,12 +1,28 @@
 ﻿using MediatR;
 using PlanYourTravel.Domain.Entities;
+using PlanYourTravel.Domain.Errors;
+using PlanYourTravel.Domain.Repositories;
+using PlanYourTravel.Domain.Shared;
 
 namespace PlanYourTravel.Application.Users.Commands.CreateUser
 {
-    internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
+    internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
     {
-        public Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        private readonly IUserRepository _userRepository;
+
+        public CreateUserCommandHandler(IUserRepository userRepository)
         {
+            _userRepository = userRepository;
+        }
+
+        public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        {
+            var existingUser = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+
+            if (existingUser is not null)
+            {
+                return Result.Failure(DomainErrors.User.DuplicateEmail);
+            }
 
             var user = User.Create(
                 Guid.NewGuid(),
@@ -15,7 +31,10 @@ namespace PlanYourTravel.Application.Users.Commands.CreateUser
                 request.FullName,
                 Domain.Enums.UserRole.User);
 
-            throw new NotImplementedException();
+            await _userRepository.AddAsync(user, cancellationToken);
+            await _userRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
         }
     }
 }

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PlanYourTravel.Domain\PlanYourTravel.Domain.csproj" />
+    <ProjectReference Include="..\PlanYourTravel.Infrastructure\PlanYourTravel.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,9 @@
 ﻿using PlanYourTravel.Domain.Enums;
+using PlanYourTravel.Domain.Primitives;
 
 namespace PlanYourTravel.Domain.Entities
 {
-    public class User
+    public sealed class User : Entity
     {
         private User(
             Guid userId,
@@ -10,8 +11,8 @@ namespace PlanYourTravel.Domain.Entities
             string password,
             string fullName,
             UserRole role)
+            : base(userId)
         {
-            UserId = userId;
             Email = email;
             Password = password;
             FullName = fullName;
