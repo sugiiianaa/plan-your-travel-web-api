@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlanYourTravel.Domain.Entities;
 using PlanYourTravel.Domain.Repositories;
+using PlanYourTravel.Domain.ValueObjects;
 using PlanYourTravel.Infrastructure.Persistence;
 
 namespace PlanYourTravel.Infrastructure.Repositories
@@ -16,10 +17,10 @@ namespace PlanYourTravel.Infrastructure.Repositories
 
         public IUnitOfWork UnitOfWork => _appDbContext;
 
-        public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+        public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken)
         {
             return await _appDbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.Email.Value == email.Value, cancellationToken);
         }
 
         public async Task AddAsync(User user, CancellationToken cancellationToken)

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\PlanYourTravel.Infrastructure\PlanYourTravel.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Flights\" />
+  </ItemGroup>
+
 </Project>

@@ -6,6 +6,17 @@
         {
             Id = id;
         }
+
+
+        /// <summary>
+        /// Ef-friendly constructore.
+        /// Protected so domain code won't accidently uset it.
+        /// </summary>
+        protected Entity()
+        {
+            Id = Guid.Empty;
+        }
+
         public Guid Id { get; private init; }
 
         public static bool operator ==(Entity? first, Entity? second)

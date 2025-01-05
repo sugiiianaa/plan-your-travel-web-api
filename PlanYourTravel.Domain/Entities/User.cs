@@ -1,17 +1,27 @@
 ﻿using PlanYourTravel.Domain.Enums;
 using PlanYourTravel.Domain.Primitives;
+using PlanYourTravel.Domain.ValueObjects;
 
 namespace PlanYourTravel.Domain.Entities
 {
-    public sealed class User : Entity
+    public sealed class User : AuditableEntity
     {
+        /// <summary>
+        /// Ef-friendly constructor (private so domain code can't call it).
+        /// Calls the base parameterless constructor.
+        /// </summary>
+        private User() : base()
+        {
+            // Ef will set properties after construction
+        }
+
         private User(
-            Guid userId,
-            string email,
+            Guid id,
+            Email email,
             string password,
             string fullName,
             UserRole role)
-            : base(userId)
+            : base(id)
         {
             Email = email;
             Password = password;
@@ -19,27 +29,19 @@ namespace PlanYourTravel.Domain.Entities
             Role = role;
         }
 
-        public Guid UserId { get; private set; }
-        public string Email { get; private set; }
-        public string Password { get; private set; }
-        public string FullName { get; private set; }
+        public Email Email { get; private set; } = null!;
+        public string Password { get; private set; } = null!;
+        public string FullName { get; private set; } = null!;
         public UserRole Role { get; private set; }
 
         public static User Create(
-            Guid userId,
-            string email,
+            Guid id,
+            Email email,
             string password,
             string fullName,
             UserRole role)
         {
-            var user = new User(
-                userId,
-                email,
-                password,
-                fullName,
-                role);
-
-            return user;
+            return new User(id, email, password, fullName, role);
         }
     }
 }
