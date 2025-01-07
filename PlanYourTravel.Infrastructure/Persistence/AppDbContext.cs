@@ -18,6 +18,8 @@ namespace PlanYourTravel.Infrastructure.Persistence
         public DbSet<FlightSeatClass> FlightSeatClasses { get; set; } = null!;
         public DbSet<Transaction> Transactions { get; set; } = null!;
         public DbSet<FlightTransaction> FlightTransactions { get; set; } = null!;
+        public DbSet<Location> Locations { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,11 +57,24 @@ namespace PlanYourTravel.Infrastructure.Persistence
                 .HasForeignKey(fs => fs.AirlineId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Transaction -> User
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.User)
+                .WithMany()
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Airport -> Location
+            modelBuilder.Entity<Airport>()
+                .HasOne(a => a.Location)
+                .WithMany()
+                .HasForeignKey(a => a.LocationId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {

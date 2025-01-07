@@ -4,7 +4,7 @@
     {
         CGK = 0,
         SIN = 1,
-        KUL = 2,
-        HND = 3,
+        AKL = 2,
+        YEG = 3,
     }
 }

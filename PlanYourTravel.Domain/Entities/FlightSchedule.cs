@@ -45,7 +45,7 @@ namespace PlanYourTravel.Domain.Entities
             = new List<FlightSeatClass>();
 
         public static FlightSchedule Create(
-           Guid id,
+            Guid id,
             string flightNumber,
             DateTime departureDateTime,
             DateTime arrivalDateTime,

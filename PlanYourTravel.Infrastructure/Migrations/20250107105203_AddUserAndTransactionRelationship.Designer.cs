@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlanYourTravel.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using PlanYourTravel.Infrastructure.Persistence;
 namespace PlanYourTravel.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250107105203_AddUserAndTransactionRelationship")]
+    partial class AddUserAndTransactionRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,8 +75,6 @@ namespace PlanYourTravel.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
 
                     b.ToTable("Airports");
                 });
@@ -152,31 +153,6 @@ namespace PlanYourTravel.Infrastructure.Migrations
                     b.HasIndex("FlightScheduleId");
 
                     b.ToTable("FlightSeatClasses");
-                });
-
-            modelBuilder.Entity("PlanYourTravel.Domain.Entities.Location", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("PlanYourTravel.Domain.Entities.Transaction", b =>
@@ -265,17 +241,6 @@ namespace PlanYourTravel.Infrastructure.Migrations
                     b.HasIndex("FlightSeatClassId");
 
                     b.ToTable("FlightTransactions", (string)null);
-                });
-
-            modelBuilder.Entity("PlanYourTravel.Domain.Entities.Airport", b =>
-                {
-                    b.HasOne("PlanYourTravel.Domain.Entities.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("PlanYourTravel.Domain.Entities.FlightSchedule", b =>

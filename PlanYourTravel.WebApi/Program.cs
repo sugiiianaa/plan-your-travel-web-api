@@ -9,6 +9,11 @@ using PlanYourTravel.Domain.Shared.Settings;
 using PlanYourTravel.Infrastructure.Persistence;
 using PlanYourTravel.Infrastructure.Repositories;
 using PlanYourTravel.Infrastructure.Services;
+using PlanYourTravel.WebApi.Helper;
+
+bool shouldSeed = args.Contains("seed");
+
+Console.WriteLine($" Flag value : {shouldSeed}");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +84,10 @@ using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         dbContext.Database.Migrate();
+        if (shouldSeed)
+        {
+            await DatabaseSeedingHelper.SeedData(dbContext);
+        }
     }
     catch (Exception ex)
     {

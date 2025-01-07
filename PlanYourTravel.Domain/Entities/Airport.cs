@@ -26,11 +26,17 @@ namespace PlanYourTravel.Domain.Entities
 
         public string Name { get; set; } = null!;
         public AirportCode Code { get; set; }
-        public Guid LocationId { get; set; }
         public AirportFlightType FlightType { get; set; }
 
+
+        // Foreign Key
+        public Guid LocationId { get; set; }
+
+        // Navigation
+        public Location Location { get; set; }
+
         public static Airport Create(
-             Guid id,
+            Guid id,
             string name,
             AirportCode code,
             Guid locationId,
