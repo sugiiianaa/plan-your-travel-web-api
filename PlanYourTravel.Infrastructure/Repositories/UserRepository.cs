@@ -14,8 +14,8 @@ namespace PlanYourTravel.Infrastructure.Repositories
         {
             _appDbContext = appDbContext;
         }
-
         public IUnitOfWork UnitOfWork => _appDbContext;
+
 
         public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken)
         {

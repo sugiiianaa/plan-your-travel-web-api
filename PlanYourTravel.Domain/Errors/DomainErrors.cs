@@ -15,5 +15,11 @@ namespace PlanYourTravel.Domain.Errors
             public static readonly Error InvalidEmailOrPassword =
                 new("User.InvalidEmailOrPassword", "The email or password is invalid");
         }
+
+        public static class Generic
+        {
+            public static readonly Error InternalServerError =
+                new("Internal.Server.Error", "There is internal error.");
+        }
     }
 }

@@ -13,8 +13,6 @@ using PlanYourTravel.WebApi.Helper;
 
 bool shouldSeed = args.Contains("seed");
 
-Console.WriteLine($" Flag value : {shouldSeed}");
-
 var builder = WebApplication.CreateBuilder(args);
 
 var jwtSecret = Environment.GetEnvironmentVariable(EnvironmentKey.jwtSecret);
@@ -75,6 +73,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 
 var app = builder.Build();
 
