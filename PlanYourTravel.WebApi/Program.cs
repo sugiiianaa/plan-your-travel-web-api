@@ -11,78 +11,100 @@ using PlanYourTravel.Infrastructure.Repositories;
 using PlanYourTravel.Infrastructure.Services;
 using PlanYourTravel.WebApi.Helper;
 
-bool shouldSeed = args.Contains("seed");
-
 var builder = WebApplication.CreateBuilder(args);
 
+// Check if seed argument is provided
+bool shouldSeed = args.Contains("seed");
+
+// Environment Variables
 var jwtSecret = Environment.GetEnvironmentVariable(EnvironmentKey.jwtSecret);
+var connectionString = Environment.GetEnvironmentVariable("PLAN_YOUR_TRAVEL_CONNECTIONSTRING");
 
-builder.Services.Configure<JwtSettings>(
-    builder.Configuration.GetSection("JwtSettings"));
+// Configure Services
+ConfigureServices(builder.Services, builder.Configuration, jwtSecret!, connectionString!);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        // This config matches how we generate tokens
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    jwtSecret!)),
-
-            ValidateIssuer = true,
-            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-
-            ValidateAudience = true,
-            ValidAudience = builder.Configuration["JwtSettings:Audience"],
-
-            // if the project want to allow expired tokens for some reason:
-            // ValidateLifetime = true,
-
-            ClockSkew = TimeSpan.Zero
-        };
-    });
-
-builder.Services.AddAuthorization(options =>
-{
-    // define policies
-    options.AddPolicy("AdminPolicy", policy =>
-        policy.RequireRole("Admin"));
-
-    options.AddPolicy("SuperUserPolicy", policy =>
-        policy.RequireRole("SuperUser"));
-});
-
-string? connectionString = Environment.GetEnvironmentVariable("PLAN_YOUR_TRAVEL_CONNECTIONSTRING");
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(typeof(CreateUserCommandHandler).Assembly);
-});
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
-builder.Services.AddScoped<IFlightRepository, FlightRepository>();
-
+// Build the App
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+// Apply Migrations and Seed Data if needed
+await ApplyMigrationsAndSeedData(app, shouldSeed);
+
+// Configure Middleware and Start the App
+ConfigureMiddleware(app);
+
+app.Run();
+
+
+// === Methods for Configuration ===
+
+void ConfigureServices(IServiceCollection services, ConfigurationManager configuration, string jwtSecret, string connectionString)
 {
+    // Configure Jwt Settings
+    services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+
+    // Authentication
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+                ValidateIssuer = true,
+                ValidIssuer = configuration["JwtSettings:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = configuration["JwtSettings:Audience"],
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+    // Authorization Policies
+    services.AddAuthorization(options =>
+    {
+        options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+        options.AddPolicy("SuperUserPolicy", policy => policy.RequireRole("SuperUser"));
+    });
+
+    // Database Context
+    services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+    services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<AppDbContext>());
+
+    // Controllers, Swagger, and MediatR
+    services.AddControllers();
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
+    services.AddMediatR(cfg =>
+    {
+        cfg.RegisterServicesFromAssembly(typeof(CreateUserCommandHandler).Assembly);
+    });
+
+    // Domain Services and Repositories
+    services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+    services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+    services.AddScoped<IFlightRepository, FlightRepository>();
+
+    // Scoped Repository Factory
+    services.AddTransient<Func<IFlightRepository>>(provider =>
+    {
+        var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+        return () => scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IFlightRepository>();
+    });
+}
+
+async Task ApplyMigrationsAndSeedData(WebApplication app, bool shouldSeed)
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
     try
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        dbContext.Database.Migrate();
+        // Apply pending migrations
+        await dbContext.Database.MigrateAsync();
+
+        // Seed database if the 'seed' argument is provided
         if (shouldSeed)
         {
             await DatabaseSeedingHelper.SeedData(dbContext);
@@ -90,24 +112,22 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        // Optional: log or handle exceptions
         Console.WriteLine($"Database Migration Failed: {ex.Message}");
         throw;
     }
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+void ConfigureMiddleware(WebApplication app)
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // Swagger only in Development
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

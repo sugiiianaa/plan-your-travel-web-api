@@ -1,4 +1,5 @@
 ﻿using PlanYourTravel.Domain.Dtos;
+using PlanYourTravel.Domain.Entities;
 
 namespace PlanYourTravel.Domain.Repositories
 {
@@ -10,5 +11,8 @@ namespace PlanYourTravel.Domain.Repositories
             Guid ArrivalAirportId,
             CancellationToken cancellationToken);
 
+        Task<Guid> AddAsync(
+            FlightSchedule flightSchedule,
+            CancellationToken cancellationToken);
     }
 }

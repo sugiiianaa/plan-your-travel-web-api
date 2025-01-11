@@ -23,16 +23,16 @@ namespace PlanYourTravel.Test.Flight
 
             // Mock returned flight schedules
             var expectedSchedules = new List<FlightScheduleDto>
-        {
-            FlightScheduleDto.Create(
-                Guid.NewGuid(),
-                "UNIT-TEST-123",
-                departureDate,
-                arrivalDate,
-                departureAirportId,
-                arrivalAirportId,
-                airlineId)
-        };
+            {
+                FlightScheduleDto.Create(
+                    Guid.NewGuid(),
+                    "UNIT-TEST-123",
+                    departureDate,
+                    arrivalDate,
+                    departureAirportId,
+                    arrivalAirportId,
+                    airlineId)
+            };
 
             flightRepositoryMock
                 .Setup(repo => repo.GetFlightSchedule(

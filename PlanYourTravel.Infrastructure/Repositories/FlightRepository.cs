@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlanYourTravel.Domain.Dtos;
+using PlanYourTravel.Domain.Entities;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Infrastructure.Persistence;
 
@@ -14,6 +15,13 @@ namespace PlanYourTravel.Infrastructure.Repositories
             _appDbContext = appDbContext;
         }
         public IUnitOfWork UnitOfWork => _appDbContext;
+
+        public async Task<Guid> AddAsync(FlightSchedule flightSchedule, CancellationToken cancellationToken)
+        {
+            await _appDbContext.FlightSchedules.AddAsync(flightSchedule, cancellationToken);
+            await _appDbContext.SaveChangesAsync(cancellationToken); // Save changes here to avoid shared DbContext issues.
+            return flightSchedule.Id;
+        }
 
         async Task<List<FlightScheduleDto>> IFlightRepository.GetFlightSchedule(
             DateTime departureDate,

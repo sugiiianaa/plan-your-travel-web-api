@@ -12,13 +12,16 @@ namespace PlanYourTravel.Application.Users.Commands.CreateUser
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CreateUserCommandHandler(
             IUserRepository userRepository,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher,
+            IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -46,7 +49,7 @@ namespace PlanYourTravel.Application.Users.Commands.CreateUser
                 Domain.Enums.UserRole.User);
 
             await _userRepository.AddAsync(user, cancellationToken);
-            await _userRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

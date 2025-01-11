@@ -7,6 +7,5 @@ namespace PlanYourTravel.Domain.Repositories
     {
         Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken);
         Task AddAsync(User user, CancellationToken cancellationToken);
-        IUnitOfWork UnitOfWork { get; }
     }
 }
