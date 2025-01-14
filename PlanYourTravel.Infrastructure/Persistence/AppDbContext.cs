@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlanYourTravel.Domain.Entities;
-using PlanYourTravel.Domain.Primitives;
+using PlanYourTravel.Domain.Commons.Primitives;
+using PlanYourTravel.Domain.Entities.Airline;
+using PlanYourTravel.Domain.Entities.FlightSchedule;
+using PlanYourTravel.Domain.Entities.Location;
+using PlanYourTravel.Domain.Entities.Transactions;
+using PlanYourTravel.Domain.Entities.User;
 using PlanYourTravel.Domain.Repositories;
 
 namespace PlanYourTravel.Infrastructure.Persistence

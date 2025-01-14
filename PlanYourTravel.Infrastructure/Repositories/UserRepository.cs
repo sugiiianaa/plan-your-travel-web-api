@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlanYourTravel.Domain.Entities;
+using PlanYourTravel.Domain.Entities.User;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Domain.ValueObjects;
 using PlanYourTravel.Infrastructure.Persistence;

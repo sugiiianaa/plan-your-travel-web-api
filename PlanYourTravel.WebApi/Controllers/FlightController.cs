@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule;
 using PlanYourTravel.Application.Flights.Queries.GetFlightSchedule;
@@ -36,6 +37,7 @@ namespace PlanYourTravel.WebApi.Controllers
         }
 
         // POST : /api/flight/flight-schedule
+        [Authorize(Roles = "Admin,SuperUser")]
         [HttpPost("flight-schedule")]
         public async Task<IActionResult> CreateFlightSchedule(
             [FromBody] CreateFlightScheduleRequest request,
@@ -65,6 +67,18 @@ namespace PlanYourTravel.WebApi.Controllers
             }
 
             return Ok(new { CreatedIds = result.Value });
+        }
+
+        [Authorize(Roles = "Admin, SuperUser")]
+        [HttpPost("flight-seat-class")]
+        public async Task<IActionResult> CreateFlightSeatClass(
+            [FromBody] CreateFlightSeatClassRequest request,
+            CancellationToken)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
         }
     }
 }

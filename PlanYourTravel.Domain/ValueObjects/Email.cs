@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlanYourTravel.Domain.Errors;
-using PlanYourTravel.Domain.Primitives;
-using PlanYourTravel.Domain.Shared;
+using PlanYourTravel.Domain.Commons.Primitives;
 
 namespace PlanYourTravel.Domain.ValueObjects
 {

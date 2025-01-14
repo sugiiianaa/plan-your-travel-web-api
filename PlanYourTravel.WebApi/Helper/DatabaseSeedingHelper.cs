@@ -1,4 +1,5 @@
-﻿using PlanYourTravel.Domain.Entities;
+﻿using PlanYourTravel.Domain.Entities.Airline;
+using PlanYourTravel.Domain.Entities.Location;
 using PlanYourTravel.Infrastructure.Persistence;
 
 namespace PlanYourTravel.WebApi.Helper

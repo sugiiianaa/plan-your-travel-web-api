@@ -8,7 +8,7 @@ using PlanYourTravel.Domain.Services;
 using PlanYourTravel.Domain.Shared.Settings;
 using PlanYourTravel.Infrastructure.Persistence;
 using PlanYourTravel.Infrastructure.Repositories;
-using PlanYourTravel.Infrastructure.Services;
+using PlanYourTravel.Infrastructure.Services.JwtTokenGenerator;
 using PlanYourTravel.WebApi.Helper;
 
 var builder = WebApplication.CreateBuilder(args);

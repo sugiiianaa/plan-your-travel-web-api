@@ -1,4 +1,4 @@
-﻿using PlanYourTravel.Domain.Entities;
+﻿using PlanYourTravel.Domain.Entities.User;
 using PlanYourTravel.Domain.ValueObjects;
 
 namespace PlanYourTravel.Domain.Repositories

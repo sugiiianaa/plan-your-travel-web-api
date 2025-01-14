@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Entities;
+using PlanYourTravel.Domain.Entities.User;
 using PlanYourTravel.Domain.Errors;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Domain.Services;

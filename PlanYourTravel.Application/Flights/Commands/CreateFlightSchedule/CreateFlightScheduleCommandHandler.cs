@@ -1,18 +1,16 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Entities;
+using PlanYourTravel.Domain.Entities.FlightSchedule;
 using PlanYourTravel.Domain.Repositories;
-using PlanYourTravel.Domain.Shared;
 
 namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule
 {
     public sealed class CreateFlightScheduleCommandHandler : IRequestHandler<CreateFlightScheduleCommand, Result<List<Guid>>>
     {
         private readonly Func<IFlightRepository> _flightRepositoryFactory;
-        private readonly IUnitOfWork _unitOfWork;
+
 
         public CreateFlightScheduleCommandHandler(IUnitOfWork unitOfWork, Func<IFlightRepository> flightRepositoryFactory)
         {
-            _unitOfWork = unitOfWork;
             _flightRepositoryFactory = flightRepositoryFactory;
         }
 
@@ -35,7 +33,7 @@ namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule
                         schedule.ArrivalAirportId,
                         schedule.AirlineId);
 
-                    var createFlightId = await repositoryScope.AddAsync(flightSchedule, cancellationToken);
+                    var createFlightId = await repositoryScope.CreateFlightSchedule(flightSchedule, cancellationToken);
 
                     // Add the created Id to the thread-safe list
                     createdIds.Add(createFlightId);
