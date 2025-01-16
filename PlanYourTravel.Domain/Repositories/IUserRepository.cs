@@ -3,9 +3,8 @@ using PlanYourTravel.Domain.ValueObjects;
 
 namespace PlanYourTravel.Domain.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
         Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken);
-        Task AddAsync(User user, CancellationToken cancellationToken);
     }
 }

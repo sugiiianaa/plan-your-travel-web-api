@@ -21,9 +21,13 @@ namespace PlanYourTravel.WebApi.Controllers
             [FromBody] AddAirportRequest request,
             CancellationToken cancellationToken)
         {
-            var command = new CreateAirportCommand(request.Name, request.Code, request.LocationId, request.FlightType);
+            var command = new CreateAirportCommand(
+                request.Name,
+                request.Code,
+                request.LocationId,
+                request.FlightType);
 
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, cancellationToken);
 
             if (result.IsFailure)
             {

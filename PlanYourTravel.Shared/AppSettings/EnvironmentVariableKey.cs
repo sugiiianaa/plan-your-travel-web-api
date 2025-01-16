@@ -1,6 +1,6 @@
-﻿namespace PlanYourTravel.Infrastructure.Settings
+﻿namespace PlanYourTravel.Shared.AppSettings
 {
-    public class EnvironmentKey
+    public static class EnvironmentVariableKey
     {
         public static string connectionString = "PLAN_YOUR_TRAVEL_CONNECTIONSTRING";
         public static string pepperWord = "PLAN_YOUR_TRAVEL_PEPPERWORD";

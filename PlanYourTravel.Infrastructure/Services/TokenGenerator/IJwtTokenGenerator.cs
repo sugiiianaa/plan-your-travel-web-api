@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Infrastructure.Services.JwtTokenGenerator
+﻿namespace PlanYourTravel.Infrastructure.Services.TokenGenerator
 {
     public interface IJwtTokenGenerator
     {

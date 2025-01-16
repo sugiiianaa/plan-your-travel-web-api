@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using PlanYourTravel.Application.Commons;
 using PlanYourTravel.Domain.Enums;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Commands.CreateAirport
 {

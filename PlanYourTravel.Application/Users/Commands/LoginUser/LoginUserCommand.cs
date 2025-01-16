@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Shared;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Users.Commands.LoginUser
 {

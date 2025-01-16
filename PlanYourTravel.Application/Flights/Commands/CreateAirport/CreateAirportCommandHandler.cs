@@ -1,26 +1,23 @@
 ﻿using MediatR;
-using PlanYourTravel.Application.Commons;
 using PlanYourTravel.Domain.Entities.AirportAggregate;
 using PlanYourTravel.Domain.Repositories;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Commands.CreateAirport
 {
-    public sealed class CreateAirportCommandHandler
-        : IRequestHandler<CreateAirportCommand, Result<Guid>>
+    public sealed class CreateAirportCommandHandler(
+        ILocationRepository locationRepository,
+        IAirportRepository airportRepository)
+            : IRequestHandler<CreateAirportCommand, Result<Guid>>
     {
-        private readonly ILocationRepository _locationRepository;
-        private readonly IAirportRepository _airportRepository;
-
-        public CreateAirportCommandHandler(ILocationRepository locationRepository, IAirportRepository airportRepository)
-        {
-            _locationRepository = locationRepository;
-            _airportRepository = airportRepository;
-        }
+        private readonly ILocationRepository _locationRepository = locationRepository;
+        private readonly IAirportRepository _airportRepository = airportRepository;
 
         public async Task<Result<Guid>> Handle(CreateAirportCommand command, CancellationToken cancellationToken)
         {
             var location = await _locationRepository.GetByIdAsync(command.LocationId);
 
+            // TODO : change this error message to use DomainError
             if (location == null)
             {
                 return Result.Failure<Guid>(new Error(

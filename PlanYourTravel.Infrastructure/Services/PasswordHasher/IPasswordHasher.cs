@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Infrastructure.Services.PasswordHasher.PasswordHasher
+﻿namespace PlanYourTravel.Infrastructure.Services.PasswordHasher
 {
     public interface IPasswordHasher
     {

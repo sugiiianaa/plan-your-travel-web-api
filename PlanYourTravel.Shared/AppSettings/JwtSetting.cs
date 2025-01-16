@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Infrastructure.Settings
+﻿namespace PlanYourTravel.Shared.AppSettings
 {
     public sealed class JwtSettings
     {

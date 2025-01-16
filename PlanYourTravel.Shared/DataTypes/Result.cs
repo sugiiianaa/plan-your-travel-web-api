@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Application.Commons
+﻿namespace PlanYourTravel.Shared.DataTypes
 {
     /// <summary>
     /// Represen a non-typed result of an operation.

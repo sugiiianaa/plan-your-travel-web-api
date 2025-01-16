@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanYourTravel.Application.Users.Commands.CreateUser;
 using PlanYourTravel.Application.Users.Commands.LoginUser;
-using PlanYourTravel.Domain.Errors;
-using PlanYourTravel.Domain.Shared;
 using PlanYourTravel.WebApi.Models;
 
 namespace PlanYourTravel.WebApi.Controllers
@@ -30,16 +28,12 @@ namespace PlanYourTravel.WebApi.Controllers
                 request.Password,
                 request.FullName);
 
-            Result result = await _mediator.Send(command, cancellationToken);
+            var result = await _mediator.Send(command, cancellationToken);
 
+            // TODO : add more proper error
             if (result.IsFailure)
             {
-                if (result.Error == DomainErrors.User.DuplicateEmail)
-                {
-                    return Conflict(new { DomainErrors.User.DuplicateEmail.Message });
-                }
-
-                return BadRequest(new { result.Error.Message });
+                return BadRequest(result.Error!);
             }
 
             return Ok(new { Message = "user created successfully" });
@@ -54,16 +48,12 @@ namespace PlanYourTravel.WebApi.Controllers
                 request.Email,
                 request.Password);
 
-            Result<string> result = await _mediator.Send(command, cancellationToken);
+            var result = await _mediator.Send(command, cancellationToken);
 
+            // TODO : add more proper error
             if (result.IsFailure)
             {
-                if (result.Error == DomainErrors.User.InvalidEmailOrPassword)
-                {
-                    return Conflict(new { DomainErrors.User.InvalidEmailOrPassword.Message });
-                }
-
-                return BadRequest(new { result.Error.Message });
+                return BadRequest(result.Error);
             }
 
             return Ok(new { Token = result.Value });

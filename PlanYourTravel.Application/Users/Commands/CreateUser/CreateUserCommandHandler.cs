@@ -1,42 +1,34 @@
 ﻿using MediatR;
+using PlanYourTravel.Application.Commons;
 using PlanYourTravel.Domain.Entities.User;
-using PlanYourTravel.Domain.Errors;
 using PlanYourTravel.Domain.Repositories;
-using PlanYourTravel.Domain.Services;
-using PlanYourTravel.Domain.Shared;
 using PlanYourTravel.Domain.ValueObjects;
+using PlanYourTravel.Infrastructure.Services.PasswordHasher;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Users.Commands.CreateUser
 {
-    public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
+    public sealed class CreateUserCommandHandler(
+        IUserRepository userRepository,
+        IPasswordHasher passwordHasher)
+                : IRequestHandler<CreateUserCommand, Result<Guid>>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IPasswordHasher _passwordHasher;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IPasswordHasher _passwordHasher = passwordHasher;
 
-        public CreateUserCommandHandler(
-            IUserRepository userRepository,
-            IPasswordHasher passwordHasher,
-            IUnitOfWork unitOfWork)
-        {
-            _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
-            _unitOfWork = unitOfWork;
-        }
-
-        public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var emailResult = Email.Create(request.Email);
             if (emailResult.IsFailure)
             {
-                return Result.Failure(emailResult.Error);
+                return Result.Failure<Guid>(ApplicationError.User.EmailInvalid());
             }
 
             var existingUser = await _userRepository.GetByEmailAsync(emailResult.Value, cancellationToken);
 
             if (existingUser is not null)
             {
-                return Result.Failure(DomainErrors.User.DuplicateEmail);
+                return Result.Failure<Guid>(ApplicationError.User.EmailAlreadyRegistered());
             }
 
             var hashedPassword = _passwordHasher.HashPassword(request.Password);
@@ -49,9 +41,9 @@ namespace PlanYourTravel.Application.Users.Commands.CreateUser
                 Domain.Enums.UserRole.User);
 
             await _userRepository.AddAsync(user, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _userRepository.SaveChangesAsync(cancellationToken);
 
-            return Result.Success();
+            return Result.Success(user.Id);
         }
     }
 }

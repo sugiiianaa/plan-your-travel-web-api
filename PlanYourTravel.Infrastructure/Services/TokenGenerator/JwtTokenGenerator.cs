@@ -3,23 +3,19 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using PlanYourTravel.Domain.Shared.Settings;
+using PlanYourTravel.Shared.AppSettings;
 
-namespace PlanYourTravel.Infrastructure.Services.JwtTokenGenerator
+namespace PlanYourTravel.Infrastructure.Services.TokenGenerator
 {
-    public sealed class JwtTokenGenerator : IJwtTokenGenerator
+    public sealed class JwtTokenGenerator(IOptions<JwtSettings> jwtOptions) : IJwtTokenGenerator
     {
-        private readonly JwtSettings _jwtSettings;
-
-        public JwtTokenGenerator(IOptions<JwtSettings> jwtOptions)
-        {
-            _jwtSettings = jwtOptions.Value;
-        }
+        private readonly JwtSettings _jwtSettings = jwtOptions.Value;
 
         public string GenerateToken(Guid userId, string email, string role)
         {
-            var jwtSecret = Environment.GetEnvironmentVariable(EnvironmentKey.jwtSecret);
+            var jwtSecret = Environment.GetEnvironmentVariable(EnvironmentVariableKey.jwtSecret);
 
+            // TODO : Add validation for environemnt variable
             var securityKeyBytes = Encoding.UTF8.GetBytes(jwtSecret);
             var securityKey = new SymmetricSecurityKey(securityKeyBytes);
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
