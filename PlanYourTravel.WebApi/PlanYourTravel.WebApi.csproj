@@ -22,6 +22,7 @@
     <ProjectReference Include="..\PlanYourTravel.Application\PlanYourTravel.Application.csproj" />
     <ProjectReference Include="..\PlanYourTravel.Domain\PlanYourTravel.Domain.csproj" />
     <ProjectReference Include="..\PlanYourTravel.Infrastructure\PlanYourTravel.Infrastructure.csproj" />
+    <ProjectReference Include="..\PlanYourTravel.Shared\PlanYourTravel.Shared.csproj" />
   </ItemGroup>
 
 </Project>

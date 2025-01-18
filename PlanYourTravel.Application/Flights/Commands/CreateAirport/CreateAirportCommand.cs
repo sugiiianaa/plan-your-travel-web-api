@@ -6,7 +6,7 @@ namespace PlanYourTravel.Application.Flights.Commands.CreateAirport
 {
     public sealed record CreateAirportCommand(
         string Name,
-        string Code,
+        int Code,
         Guid LocationId,
         AirportFlightType FlightType) : IRequest<Result<Guid>>;
 }

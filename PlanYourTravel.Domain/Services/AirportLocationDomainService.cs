@@ -1,5 +1,5 @@
 ﻿using PlanYourTravel.Domain.Entities.AirportAggregate;
-using PlanYourTravel.Domain.Entities.Location;
+using PlanYourTravel.Domain.Entities.LocationAggregate;
 
 namespace PlanYourTravel.Domain.Services
 {

@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PlanYourTravel.Application.Users.Commands.CreateUser;
 using PlanYourTravel.Domain.Repositories;
-using PlanYourTravel.Domain.Services;
-using PlanYourTravel.Domain.Shared.Settings;
+using PlanYourTravel.Domain.Repositories.Abstraction;
 using PlanYourTravel.Infrastructure.Persistence;
 using PlanYourTravel.Infrastructure.Repositories;
+using PlanYourTravel.Infrastructure.Services.PasswordHasher;
 using PlanYourTravel.Infrastructure.Services.TokenGenerator;
+using PlanYourTravel.Shared.AppSettings;
 using PlanYourTravel.WebApi.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 bool shouldSeed = args.Contains("seed");
 
 // Environment Variables
-var jwtSecret = Environment.GetEnvironmentVariable(EnvironmentKey.jwtSecret);
+var jwtSecret = Environment.GetEnvironmentVariable(EnvironmentVariableKey.jwtSecret);
 var connectionString = Environment.GetEnvironmentVariable("PLAN_YOUR_TRAVEL_CONNECTIONSTRING");
 
 // Configure Services
@@ -81,17 +82,14 @@ void ConfigureServices(IServiceCollection services, ConfigurationManager configu
     });
 
     // Domain Services and Repositories
-    services.AddScoped<IUserRepository, UserRepository>();
     services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-    services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
-    services.AddScoped<IFlightRepository, FlightRepository>();
+    services.AddScoped<IPasswordHasher, PasswordHasher>();
 
-    // Scoped Repository Factory
-    services.AddTransient<Func<IFlightRepository>>(provider =>
-    {
-        var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
-        return () => scopeFactory.CreateScope().ServiceProvider.GetRequiredService<IFlightRepository>();
-    });
+    services.AddScoped<IAirportRepository, AirportRepository>();
+    services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
+    services.AddScoped<IFlightSeatClassRepository, FlightSeatClassRepository>();
+    services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<ILocationRepository, LocationRepository>();
 }
 
 async Task ApplyMigrationsAndSeedData(WebApplication app, bool shouldSeed)

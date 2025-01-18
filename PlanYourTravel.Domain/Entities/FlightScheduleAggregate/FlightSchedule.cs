@@ -1,7 +1,10 @@
-﻿using PlanYourTravel.Domain.Commons.Primitives;
+﻿using PlanYourTravel.Domain.Commons.Exceptions;
+using PlanYourTravel.Domain.Commons.Primitives;
+using PlanYourTravel.Domain.Entities.AirlineAggregate;
+using PlanYourTravel.Domain.Entities.AirportAggregate;
 using PlanYourTravel.Domain.Enums;
 
-namespace PlanYourTravel.Domain.Entities.FlightSchedule
+namespace PlanYourTravel.Domain.Entities.FlightScheduleAggregate
 {
     public sealed class FlightSchedule : AuditableEntity
     {
@@ -30,7 +33,7 @@ namespace PlanYourTravel.Domain.Entities.FlightSchedule
 
         public string FlightNumber { get; private set; }
 
-        // Foregin Keys
+        // Foreign Keys
         public Guid DepartureAirportId { get; private set; }
         public Guid ArrivalAirportId { get; private set; }
         public Guid AirlineId { get; private set; }

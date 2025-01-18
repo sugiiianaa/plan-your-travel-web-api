@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlanYourTravel.Domain.Commons.Primitives;
-using PlanYourTravel.Domain.Entities.Airline;
-using PlanYourTravel.Domain.Entities.FlightSchedule;
-using PlanYourTravel.Domain.Entities.Location;
+using PlanYourTravel.Domain.Entities.AirlineAggregate;
+using PlanYourTravel.Domain.Entities.AirportAggregate;
+using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
+using PlanYourTravel.Domain.Entities.LocationAggregate;
 using PlanYourTravel.Domain.Entities.Transactions;
-using PlanYourTravel.Domain.Entities.User;
-using PlanYourTravel.Domain.Repositories;
+using PlanYourTravel.Domain.Entities.UserAggregate;
+using PlanYourTravel.Domain.Repositories.Abstraction;
 
 namespace PlanYourTravel.Infrastructure.Persistence
 {
@@ -74,6 +75,20 @@ namespace PlanYourTravel.Infrastructure.Persistence
                 .WithMany()
                 .HasForeignKey(a => a.LocationId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Email model configuration on user entity
+            modelBuilder.Entity<User>(userBuilder =>
+            {
+                userBuilder.OwnsOne(u => u.Email, owned =>
+                {
+                    owned.Property(e => e.Value)
+                         .HasColumnName("EmailAddress")
+                         .IsRequired();
+                });
+
+                // This ensures EF doesn't accidentally create a separate table for the owned type
+                userBuilder.Navigation(u => u.Email).IsRequired();
+            });
 
             base.OnModelCreating(modelBuilder);
         }

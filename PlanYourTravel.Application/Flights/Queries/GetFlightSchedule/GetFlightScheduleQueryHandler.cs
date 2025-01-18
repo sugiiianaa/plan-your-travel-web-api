@@ -1,40 +1,39 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Dtos;
-using PlanYourTravel.Domain.Errors;
+using PlanYourTravel.Application.Dtos;
+using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
 using PlanYourTravel.Domain.Repositories;
-using PlanYourTravel.Domain.Shared;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Queries.GetFlightSchedule
 {
-    public sealed class GetFlightScheduleQueryHandler
-        : IRequestHandler<GetFlightScheduleQuery, Result<IList<FlightScheduleDto>>>
+    public sealed class GetFlightScheduleQueryHandler(
+        IFlightScheduleRepository flightScheduleRepository)
+                : IRequestHandler<GetFlightScheduleQuery, Result<FlightSchedulesPageDto>>
     {
-        private readonly IFlightRepository _flightRepository;
+        private readonly IFlightScheduleRepository _flightScheduleRepository = flightScheduleRepository;
 
-        public GetFlightScheduleQueryHandler(IFlightRepository flightRepository)
-        {
-            _flightRepository = flightRepository;
-        }
-
-        public async Task<Result<IList<FlightScheduleDto>>> Handle(
+        public async Task<Result<FlightSchedulesPageDto>> Handle(
             GetFlightScheduleQuery request,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                var schedule = await _flightRepository
-                    .GetFlightSchedule(request.DepartureDate,
-                        request.DepartureAirportId,
-                        request.ArrivalAirportId,
-                        cancellationToken);
+            (IList<FlightSchedule> flightSchedules, int totalCount) = await _flightScheduleRepository.GetAllAsync(
+                request.DepartureDate,
+                request.DepartureAirportId,
+                request.ArrivalAirportId,
+                request.LastSeendId,
+                request.PageSize,
+                cancellationToken);
 
-                return Result.Success<IList<FlightScheduleDto>>(schedule);
-            }
-            catch (Exception)
+            var lastSeenId = flightSchedules.Any() ? flightSchedules.LastOrDefault()!.Id : request.LastSeendId;
+
+            var flightScheduleDtos = new FlightSchedulesPageDto
             {
-                return Result.Failure<IList<FlightScheduleDto>>(DomainErrors.Generic.InternalServerError);
-            }
-            throw new NotImplementedException();
+                Schedules = flightSchedules,
+                TotalCount = totalCount,
+                NextLastSeenId = lastSeenId,
+            };
+
+            return Result.Success(flightScheduleDtos);
         }
     }
 }

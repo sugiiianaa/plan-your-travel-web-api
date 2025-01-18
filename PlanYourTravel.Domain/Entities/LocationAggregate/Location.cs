@@ -1,6 +1,6 @@
 ﻿using PlanYourTravel.Domain.Commons.Primitives;
 
-namespace PlanYourTravel.Domain.Entities.Location
+namespace PlanYourTravel.Domain.Entities.LocationAggregate
 {
     public sealed class Location : AuditableEntity
     {

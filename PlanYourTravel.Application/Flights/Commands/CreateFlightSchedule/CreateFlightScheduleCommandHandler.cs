@@ -1,52 +1,43 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Entities.FlightSchedule;
+using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
 using PlanYourTravel.Domain.Repositories;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule
 {
-    public sealed class CreateFlightScheduleCommandHandler : IRequestHandler<CreateFlightScheduleCommand, Result<List<Guid>>>
+    public sealed class CreateFlightScheduleCommandHandler(IFlightScheduleRepository flightScheduleRepository)
+        : IRequestHandler<CreateFlightScheduleCommand, Result<List<Guid>>>
     {
-        private readonly Func<IFlightRepository> _flightRepositoryFactory;
-
-
-        public CreateFlightScheduleCommandHandler(IUnitOfWork unitOfWork, Func<IFlightRepository> flightRepositoryFactory)
-        {
-            _flightRepositoryFactory = flightRepositoryFactory;
-        }
+        private readonly IFlightScheduleRepository _flightScheduleRepository = flightScheduleRepository;
 
         public async Task<Result<List<Guid>>> Handle(CreateFlightScheduleCommand request, CancellationToken cancellationToken)
         {
-            // A thread-safe list to store the Ids of successfully created flight schedule
+            if (request.FlightSchedules is null || request.FlightSchedules.Count == 0)
+            {
+                return Result.Failure<List<Guid>>(new Error("FlightScheduleNotFound", "No flight schedule provided."));
+            }
+
             var createdIds = new List<Guid>();
 
-            var tasks = request.FlightSchedules.Select(async schedule =>
+            foreach (var item in request.FlightSchedules)
             {
-                try
-                {
-                    var repositoryScope = _flightRepositoryFactory();
-                    var flightSchedule = FlightSchedule.Create(
-                        Guid.NewGuid(),
-                        schedule.FlightNumber,
-                        schedule.DepartureDateTime,
-                        schedule.ArrivalDateTime,
-                        schedule.DepartureAirportId,
-                        schedule.ArrivalAirportId,
-                        schedule.AirlineId);
+                var flightSchedule = FlightSchedule.Create(
+                    Guid.NewGuid(),
+                    item.FlightNumber,
+                    item.DepartureDateTime,
+                    item.ArrivalDateTime,
+                    item.DepartureAirportId,
+                    item.ArrivalAirportId,
+                    item.AirlineId);
 
-                    var createFlightId = await repositoryScope.CreateFlightSchedule(flightSchedule, cancellationToken);
+                await _flightScheduleRepository.AddAsync(flightSchedule, cancellationToken);
 
-                    // Add the created Id to the thread-safe list
-                    createdIds.Add(createFlightId);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error Createting flight schedule for {schedule.FlightNumber}, ${ex}");
-                }
-            });
+                createdIds.Add(flightSchedule.Id);
+            }
 
-            await Task.WhenAll(tasks);
+            await _flightScheduleRepository.SaveChangesAsync(cancellationToken);
 
-            return Result.Success(createdIds.ToList());
+            return Result.Success(createdIds);
         }
     }
 }

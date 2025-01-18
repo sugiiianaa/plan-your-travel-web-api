@@ -1,5 +1,6 @@
-﻿using PlanYourTravel.Domain.Entities.Airline;
-using PlanYourTravel.Domain.Entities.Location;
+﻿using PlanYourTravel.Domain.Entities.AirlineAggregate;
+using PlanYourTravel.Domain.Entities.AirportAggregate;
+using PlanYourTravel.Domain.Entities.LocationAggregate;
 using PlanYourTravel.Infrastructure.Persistence;
 
 namespace PlanYourTravel.WebApi.Helper

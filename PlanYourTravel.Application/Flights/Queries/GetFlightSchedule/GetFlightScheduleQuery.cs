@@ -1,11 +1,13 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Dtos;
-using PlanYourTravel.Domain.Shared;
+using PlanYourTravel.Application.Dtos;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Queries.GetFlightSchedule
 {
     public sealed record GetFlightScheduleQuery(
         DateTime DepartureDate,
         Guid DepartureAirportId,
-        Guid ArrivalAirportId) : IRequest<Result<IList<FlightScheduleDto>>>;
+        Guid ArrivalAirportId,
+        Guid LastSeendId,
+        int PageSize) : IRequest<Result<FlightSchedulesPageDto>>;
 }

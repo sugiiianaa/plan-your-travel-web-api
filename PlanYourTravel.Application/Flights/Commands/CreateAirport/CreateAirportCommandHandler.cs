@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using PlanYourTravel.Domain.Entities.AirportAggregate;
+using PlanYourTravel.Domain.Enums;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Shared.DataTypes;
 
@@ -15,7 +16,7 @@ namespace PlanYourTravel.Application.Flights.Commands.CreateAirport
 
         public async Task<Result<Guid>> Handle(CreateAirportCommand command, CancellationToken cancellationToken)
         {
-            var location = await _locationRepository.GetByIdAsync(command.LocationId);
+            var location = await _locationRepository.GetByIdAsync(command.LocationId, cancellationToken);
 
             // TODO : change this error message to use DomainError
             if (location == null)
@@ -28,7 +29,7 @@ namespace PlanYourTravel.Application.Flights.Commands.CreateAirport
             var airport = Airport.Create(
                 Guid.NewGuid(),
                 command.Name,
-                command.Code,
+                (AirportCode)command.Code,
                 command.LocationId,
                 command.FlightType);
 

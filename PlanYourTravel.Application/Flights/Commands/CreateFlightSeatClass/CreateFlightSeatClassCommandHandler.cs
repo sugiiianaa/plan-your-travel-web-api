@@ -1,79 +1,49 @@
 ﻿using MediatR;
+using PlanYourTravel.Domain.Enums;
 using PlanYourTravel.Domain.Repositories;
-using PlanYourTravel.Domain.Shared;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSeatClass
 {
-    public class CreateFlightSeatClassCommandHandler : IRequestHandler<CreateFlightSeatClassCommand, Result<List<Guid>
+    public class CreateFlightSeatClassCommandHandler(
+        IFlightSeatClassRepository flightSeatClassRepository,
+        IFlightScheduleRepository flightScheduleRepository)
+        : IRequestHandler<CreateFlightSeatClassCommand, Result<List<Guid>>>
     {
-        private readonly IFlightRepository _flightRepository;
-
-        public CreateFlightSeatClassCommandHandler(IFlightRepository flightRepository)
-        {
-            _flightRepository = flightRepository;
-        }
-
+        private readonly IFlightSeatClassRepository _flightSeatClassRepository = flightSeatClassRepository;
+        private readonly IFlightScheduleRepository _flightScheduleRepository = flightScheduleRepository;
         public async Task<Result<List<Guid>>> Handle(CreateFlightSeatClassCommand request, CancellationToken cancellationToken)
         {
-            var createdIds = new List<Guid>();
+            var flightSchedule = await _flightScheduleRepository.GetByIdAsync(request.FlightScheduleId, cancellationToken);
 
-
-            using (var transaction = await _flightRepository.BeginTransactionAsync(cancellationToken))
+            if (flightSchedule == null)
             {
-                try
-                {
-                    // Process each seat class in the batch
-                    foreach (var seatClassDto in request.FlightSeatClass)
-                    {
-                        // 1. Retrieve aggregate root
-                        var flightSchedule = await _flightRepository
-                            .GetFlightShcheduleById(seatClassDto.FlightScheduleId);
-
-                        // Fail fast: if flight schedule not found, stop everything
-                        if (flightSchedule is null)
-                        {
-                            // Rollback & return a failure
-                            await transaction.RollbackAsync(cancellationToken);
-                            return Result.Fail<List<Guid>>(
-                                $"FlightSchedule not found for ID {seatClassDto.FlightScheduleId}");
-                        }
-
-                        // 2. Use a domain method to add the seat class 
-                        //    (Domain validation may throw a DomainException)
-                        var seatClass = flightSchedule.AddSeatClass(
-                            Guid.NewGuid(),
-                            seatClassDto.Type,
-                            seatClassDto.Capacity,
-                            seatClassDto.Price
-                        );
-
-                        createdIds.Add(seatClass.Id);
-
-                        // 3. Update the flight schedule in the repository
-                        await _flightRepository.UpdateAsync(flightSchedule);
-                    }
-
-                    // 4. Persist changes (all seat classes at once)
-                    await _flightRepository.SaveChangesAsync();
-                    await transaction.CommitAsync(cancellationToken);
-
-                    // If we got here, it means everything succeeded
-                    return Result.Success(createdIds);
-                }
-                catch (DomainException dex)
-                {
-                    // Handle domain-level validation errors, rollback & fail
-                    await transaction.RollbackAsync(cancellationToken);
-                    return Result.Fail<List<Guid>>(dex.Message);
-                }
-                catch (Exception ex)
-                {
-                    // Handle unexpected errors, rollback & fail
-                    await transaction.RollbackAsync(cancellationToken);
-                    return Result.Fail<List<Guid>>(
-                        "An unexpected error occurred: " + ex.Message);
-                }
+                return Result.Failure<List<Guid>>(new Error("FlightScheduleNotFound", "The provided flight schedule is not found"));
             }
+
+            if (request.FlightSeatClassItem is null || request.FlightSeatClassItem.Count == 0)
+            {
+                return Result.Failure<List<Guid>>(new Error("FlightSeatClassIsNull", "The flight seat class must be provided"));
+            }
+
+            var seatClassIds = new List<Guid>();
+
+            foreach (var seatClass in request.FlightSeatClassItem)
+            {
+                var flightSeatClass = flightSchedule.AddSeatClass(
+                    Guid.NewGuid(),
+                    (SeatClassType)seatClass.SeatClassType,
+                    seatClass.Capacity,
+                    seatClass.Price);
+
+                await _flightSeatClassRepository.AddAsync(flightSeatClass, cancellationToken);
+
+                seatClassIds.Add(flightSeatClass.Id);
+            }
+
+            await _flightSeatClassRepository.SaveChangesAsync(cancellationToken);
+
+            return Result.Success(seatClassIds);
         }
     }
 }

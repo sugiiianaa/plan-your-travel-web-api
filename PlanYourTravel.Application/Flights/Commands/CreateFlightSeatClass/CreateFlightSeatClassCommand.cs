@@ -1,13 +1,14 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Shared;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSeatClass
 {
     public sealed record CreateFlightSeatClassCommand(
-        IList<CreateFlightSeatClassItem> FlightSeatClass) : IRequest<Result<List<Guid>>>;
+        Guid FlightScheduleId,
+        IList<CreateFlightSeatClassItem> FlightSeatClassItem)
+            : IRequest<Result<List<Guid>>>;
 
     public sealed record CreateFlightSeatClassItem(
-        Guid FlightScheduleId,
         int SeatClassType,
         int Capacity,
         int SeatsBooked,

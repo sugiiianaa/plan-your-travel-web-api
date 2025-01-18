@@ -1,7 +1,7 @@
 ﻿using PlanYourTravel.Domain.Commons.Primitives;
 using PlanYourTravel.Domain.Enums;
 
-namespace PlanYourTravel.Domain.Entities.Airline
+namespace PlanYourTravel.Domain.Entities.AirlineAggregate
 {
     public sealed class Airline : AuditableEntity
     {

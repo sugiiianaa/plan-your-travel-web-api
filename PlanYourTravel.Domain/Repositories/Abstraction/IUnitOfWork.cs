@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Domain.Repositories
+﻿namespace PlanYourTravel.Domain.Repositories.Abstraction
 {
     public interface IUnitOfWork
     {

@@ -1,4 +1,5 @@
 ﻿using PlanYourTravel.Domain.Commons.Primitives;
+using PlanYourTravel.Domain.Entities.UserAggregate;
 using PlanYourTravel.Domain.Enums;
 
 namespace PlanYourTravel.Domain.Entities.Transactions

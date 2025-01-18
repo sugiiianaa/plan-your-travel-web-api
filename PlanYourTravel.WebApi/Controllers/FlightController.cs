@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule;
+using PlanYourTravel.Application.Flights.Commands.CreateFlightSeatClass;
 using PlanYourTravel.Application.Flights.Queries.GetFlightSchedule;
 using PlanYourTravel.WebApi.Models;
 
@@ -24,13 +25,18 @@ namespace PlanYourTravel.WebApi.Controllers
             [FromQuery] GetFlightScheduleRequest request,
             CancellationToken cancellationToken)
         {
-            var query = new GetFlightScheduleQuery(request.DepartureDate, request.DepartFrom, request.ArriveAt);
+            var query = new GetFlightScheduleQuery(
+                request.DepartureDate,
+                request.DepartFrom,
+                request.ArriveAt,
+                request.LastSeenId,
+                request.PageSize);
 
             var result = await _mediator.Send(query, cancellationToken);
 
             if (result.IsFailure)
             {
-                return BadRequest(new { result.Error.Message });
+                return BadRequest(result.Error);
             }
 
             return Ok(result.Value);
@@ -56,14 +62,14 @@ namespace PlanYourTravel.WebApi.Controllers
                     fs.ArrivalDateTime,
                     fs.DepartureAirportId,
                     fs.ArrivalAirportId,
-                    fs.AirlineId)).ToList()
-                    );
+                    fs.AirlineId))
+                .ToList());
 
             var result = await _mediator.Send(command, cancellationToken);
 
             if (result.IsFailure)
             {
-                return BadRequest(new { result.Error.Message });
+                return BadRequest(result.Error);
             }
 
             return Ok(new { CreatedIds = result.Value });
@@ -73,12 +79,31 @@ namespace PlanYourTravel.WebApi.Controllers
         [HttpPost("flight-seat-class")]
         public async Task<IActionResult> CreateFlightSeatClass(
             [FromBody] CreateFlightSeatClassRequest request,
-            CancellationToken)
+            CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+
+            var command = new CreateFlightSeatClassCommand(
+                request.FlightScheduleId,
+                request.FlightSeatClassModels.Select(fsc =>
+                new CreateFlightSeatClassItem(
+                    fsc.SeatClassType,
+                    fsc.Capacity,
+                    fsc.SeatBooked ?? 0,
+                    fsc.Price))
+                .ToList());
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok(new { CreatedIds = result.Value });
         }
     }
 }

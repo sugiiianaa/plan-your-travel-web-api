@@ -1,7 +1,7 @@
 ﻿using PlanYourTravel.Domain.Commons.Primitives;
 using PlanYourTravel.Domain.Enums;
 
-namespace PlanYourTravel.Domain.Entities.FlightSchedule
+namespace PlanYourTravel.Domain.Entities.FlightScheduleAggregate
 {
     public class FlightSeatClass : AuditableEntity
     {

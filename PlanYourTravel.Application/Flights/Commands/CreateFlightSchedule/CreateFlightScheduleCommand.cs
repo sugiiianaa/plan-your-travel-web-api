@@ -1,12 +1,12 @@
 ﻿using MediatR;
-using PlanYourTravel.Domain.Shared;
+using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule
 {
     public sealed record CreateFlightScheduleCommand
     (
-        IList<CreateFlightScheduleItem> FlightSchedules
-        ) : IRequest<Result<List<Guid>>>;
+        IList<CreateFlightScheduleItem> FlightSchedules)
+            : IRequest<Result<List<Guid>>>;
 
     public sealed record CreateFlightScheduleItem(
         string FlightNumber,

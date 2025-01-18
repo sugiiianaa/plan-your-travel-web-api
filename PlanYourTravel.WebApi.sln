@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanYourTravel.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanYourTravel.Test", "PlanYourTravel.Test\PlanYourTravel.Test.csproj", "{E1F3FE1D-DCAF-44A2-A973-D840F4131BE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanYourTravel.Shared", "PlanYourTravel.Shared\PlanYourTravel.Shared.csproj", "{E494B343-AB95-44CD-ABCC-BB5444413879}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{E1F3FE1D-DCAF-44A2-A973-D840F4131BE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1F3FE1D-DCAF-44A2-A973-D840F4131BE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1F3FE1D-DCAF-44A2-A973-D840F4131BE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E494B343-AB95-44CD-ABCC-BB5444413879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E494B343-AB95-44CD-ABCC-BB5444413879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E494B343-AB95-44CD-ABCC-BB5444413879}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E494B343-AB95-44CD-ABCC-BB5444413879}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

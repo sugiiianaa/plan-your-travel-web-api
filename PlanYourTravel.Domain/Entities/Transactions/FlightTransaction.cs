@@ -1,4 +1,4 @@
-﻿using PlanYourTravel.Domain.Entities.FlightSchedule;
+﻿using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
 using PlanYourTravel.Domain.Enums;
 
 namespace PlanYourTravel.Domain.Entities.Transactions

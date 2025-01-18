@@ -2,7 +2,7 @@
 using PlanYourTravel.Domain.Enums;
 using PlanYourTravel.Domain.ValueObjects;
 
-namespace PlanYourTravel.Domain.Entities.User
+namespace PlanYourTravel.Domain.Entities.UserAggregate
 {
     public sealed class User : AuditableEntity
     {
@@ -42,6 +42,11 @@ namespace PlanYourTravel.Domain.Entities.User
             UserRole role)
         {
             return new User(id, email, password, fullName, role);
+        }
+
+        public void UpdateEmail(Email newEmail)
+        {
+            Email = newEmail;
         }
     }
 }

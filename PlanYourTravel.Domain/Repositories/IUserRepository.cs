@@ -1,4 +1,5 @@
-﻿using PlanYourTravel.Domain.Entities.User;
+﻿using PlanYourTravel.Domain.Entities.UserAggregate;
+using PlanYourTravel.Domain.Repositories.Abstraction;
 using PlanYourTravel.Domain.ValueObjects;
 
 namespace PlanYourTravel.Domain.Repositories

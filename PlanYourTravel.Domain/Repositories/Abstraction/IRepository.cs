@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Domain.Repositories
+﻿namespace PlanYourTravel.Domain.Repositories.Abstraction
 {
     public interface IRepository<TAggregateRoot>
         where TAggregateRoot : class

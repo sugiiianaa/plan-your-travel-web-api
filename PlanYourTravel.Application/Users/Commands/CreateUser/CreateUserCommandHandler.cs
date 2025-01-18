@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using PlanYourTravel.Application.Commons;
-using PlanYourTravel.Domain.Entities.User;
+using PlanYourTravel.Domain.Entities.UserAggregate;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Domain.ValueObjects;
 using PlanYourTravel.Infrastructure.Services.PasswordHasher;
