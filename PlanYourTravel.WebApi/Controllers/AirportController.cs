@@ -7,14 +7,9 @@ namespace PlanYourTravel.WebApi.Controllers
 {
     [ApiController]
     [Route("api/airport")]
-    public class AirportController : ControllerBase
+    public class AirportController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public AirportController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         [HttpPost("add-airport")]
         public async Task<IActionResult> AddAirport(

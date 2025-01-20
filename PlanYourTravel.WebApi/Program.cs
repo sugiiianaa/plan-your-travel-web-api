@@ -7,6 +7,7 @@ using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Domain.Repositories.Abstraction;
 using PlanYourTravel.Infrastructure.Persistence;
 using PlanYourTravel.Infrastructure.Repositories;
+using PlanYourTravel.Infrastructure.Services.GetCurrentUser;
 using PlanYourTravel.Infrastructure.Services.PasswordHasher;
 using PlanYourTravel.Infrastructure.Services.TokenGenerator;
 using PlanYourTravel.Shared.AppSettings;
@@ -81,15 +82,20 @@ void ConfigureServices(IServiceCollection services, ConfigurationManager configu
         cfg.RegisterServicesFromAssembly(typeof(CreateUserCommandHandler).Assembly);
     });
 
+    // HttpContext Accessor 
+    services.AddHttpContextAccessor();
+
     // Domain Services and Repositories
     services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
     services.AddScoped<IPasswordHasher, PasswordHasher>();
+    services.AddScoped<IGetCurrentUser, GetCurrentUser>();
 
     services.AddScoped<IAirportRepository, AirportRepository>();
     services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
     services.AddScoped<IFlightSeatClassRepository, FlightSeatClassRepository>();
     services.AddScoped<IUserRepository, UserRepository>();
     services.AddScoped<ILocationRepository, LocationRepository>();
+    services.AddScoped<IFlightTransactionRepository, FlightTransactionRepository>();
 }
 
 async Task ApplyMigrationsAndSeedData(WebApplication app, bool shouldSeed)
@@ -125,7 +131,9 @@ void ConfigureMiddleware(WebApplication app)
     }
 
     app.UseHttpsRedirection();
+
     app.UseAuthentication();
     app.UseAuthorization();
+
     app.MapControllers();
 }

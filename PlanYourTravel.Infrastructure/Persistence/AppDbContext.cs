@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using PlanYourTravel.Domain.Common.Primitives;
 using PlanYourTravel.Domain.Commons.Primitives;
 using PlanYourTravel.Domain.Entities.AirlineAggregate;
 using PlanYourTravel.Domain.Entities.AirportAggregate;
@@ -12,8 +14,15 @@ namespace PlanYourTravel.Infrastructure.Persistence
 {
     public class AppDbContext : DbContext, IUnitOfWork
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options) { }
+        private readonly IMediator? _mediator;
+
+        public AppDbContext(
+            DbContextOptions<AppDbContext> options,
+            IMediator? mediator = null)
+            : base(options)
+        {
+            _mediator = mediator;
+        }
 
 
         public DbSet<User> Users { get; set; }
@@ -95,6 +104,7 @@ namespace PlanYourTravel.Infrastructure.Persistence
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            // Update auditable fields
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {
                 if (entry.State == EntityState.Added)
@@ -108,7 +118,33 @@ namespace PlanYourTravel.Infrastructure.Persistence
                 }
             }
 
-            return await base.SaveChangesAsync(cancellationToken);
+
+            // Save changes to DB
+            var result = await base.SaveChangesAsync(cancellationToken);
+
+            // Dispatch domain events if Mediator is available
+            if (_mediator != null)
+            {
+                var domainEntities = ChangeTracker
+                   .Entries<IHasDomainEvents>()
+                   .Where(e => e.Entity.DomainEvents.Any())
+                   .Select(e => e.Entity)
+                   .ToList();
+
+                foreach (var entity in domainEntities)
+                {
+                    var events = entity.DomainEvents.ToList();
+                    entity.ClearDomainEvents();
+
+                    // Publish each event via MediatR
+                    foreach (var domainEvent in events)
+                    {
+                        await _mediator.Publish(domainEvent, cancellationToken);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

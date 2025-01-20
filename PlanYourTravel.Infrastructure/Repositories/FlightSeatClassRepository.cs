@@ -1,4 +1,5 @@
-﻿using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
+﻿using Microsoft.EntityFrameworkCore;
+using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Domain.Repositories.Abstraction;
 using PlanYourTravel.Infrastructure.Persistence;
@@ -33,5 +34,11 @@ namespace PlanYourTravel.Infrastructure.Repositories
             return await _appDbContext.SaveChangesAsync(cancellationToken);
         }
 
+        // Extentions
+        public async Task<FlightSeatClass?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _appDbContext.FlightSeatClasses
+                .FirstOrDefaultAsync(fsc => fsc.Id == id, cancellationToken);
+        }
     }
 }

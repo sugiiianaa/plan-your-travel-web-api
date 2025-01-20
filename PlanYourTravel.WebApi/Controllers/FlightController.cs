@@ -10,14 +10,9 @@ namespace PlanYourTravel.WebApi.Controllers
 {
     [ApiController]
     [Route("api/flight")]
-    public class FlightController : ControllerBase
+    public class FlightController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public FlightController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         // GET : /api/flight/flight-schedule
         [HttpGet("flight-schedule")]
@@ -75,6 +70,7 @@ namespace PlanYourTravel.WebApi.Controllers
             return Ok(new { CreatedIds = result.Value });
         }
 
+        // POST : /api/flight/flight-seat-class
         [Authorize(Roles = "Admin, SuperUser")]
         [HttpPost("flight-seat-class")]
         public async Task<IActionResult> CreateFlightSeatClass(

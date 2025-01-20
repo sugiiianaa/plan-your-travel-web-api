@@ -40,6 +40,5 @@ namespace PlanYourTravel.Domain.Entities.Transactions
 
         // Navigation Properties
         public User User { get; protected set; }
-
     }
 }
