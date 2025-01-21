@@ -18,12 +18,12 @@ namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSeatClass
 
             if (flightSchedule == null)
             {
-                return Result.Failure<List<Guid>>(new Error("FlightScheduleNotFound", "The provided flight schedule is not found"));
+                return Result.Failure<List<Guid>>(new Error("FlightScheduleNotFound"));
             }
 
             if (request.FlightSeatClassItem is null || request.FlightSeatClassItem.Count == 0)
             {
-                return Result.Failure<List<Guid>>(new Error("FlightSeatClassIsNull", "The flight seat class must be provided"));
+                return Result.Failure<List<Guid>>(new Error("FlightSeatClassRequestDataIsNull"));
             }
 
             var seatClassIds = new List<Guid>();

@@ -59,17 +59,8 @@
     /// <summary>
     /// Represent an error of an operation.
     /// </summary>
-    public class Error
+    public class Error(string errorCode)
     {
-        public string Code { get; }
-        public string Message { get; }
-
-        public Error(string code, string message)
-        {
-            Code = code;
-            Message = message;
-        }
-
-        public override string ToString() => $"{Code} {Message}";
+        public string ErrorCode { get; } = errorCode;
     }
 }

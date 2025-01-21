@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using PlanYourTravel.Application.Commons;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Domain.ValueObjects;
 using PlanYourTravel.Infrastructure.Services.PasswordHasher;
@@ -24,21 +23,21 @@ namespace PlanYourTravel.Application.Users.Commands.LoginUser
 
             if (emailResult.IsFailure)
             {
-                return Result.Failure<string>(ApplicationError.User.EmailInvalid());
+                return Result.Failure<string>(new Error(emailResult.Error!.ErrorCode));
             }
 
             var existingUser = await _userRepository.GetByEmailAsync(emailResult.Value, cancellationToken);
 
             if (existingUser is null)
             {
-                return Result.Failure<string>(ApplicationError.User.EmailNotFound());
+                return Result.Failure<string>(new Error("EmailOrPasswordInvalid"));
             }
 
             var isValidPassword = _passwordHasher.VerifyPassword(existingUser.Password, request.Password);
 
             if (!isValidPassword)
             {
-                return Result.Failure<string>(ApplicationError.User.EmailOrPasswordInvalid());
+                return Result.Failure<string>(new Error("EmailOrPasswordInvalid"));
             }
 
             var jwtToken = _jwtTokenGenerator.GenerateToken(

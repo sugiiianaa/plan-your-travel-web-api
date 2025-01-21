@@ -6,8 +6,7 @@ namespace PlanYourTravel.Domain.Errors
     {
         public static class Email
         {
-            public static Error Invalid()
-                => new Error("InvalidEmail", "Invalid email address");
+            public static Error Invalid() => new("InvalidEmail");
         }
     }
 }

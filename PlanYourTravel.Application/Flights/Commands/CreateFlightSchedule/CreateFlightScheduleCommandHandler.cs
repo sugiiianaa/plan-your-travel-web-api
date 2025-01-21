@@ -14,7 +14,7 @@ namespace PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule
         {
             if (request.FlightSchedules is null || request.FlightSchedules.Count == 0)
             {
-                return Result.Failure<List<Guid>>(new Error("FlightScheduleNotFound", "No flight schedule provided."));
+                return Result.Failure<List<Guid>>(new Error("FlightScheduleNotFound"));
             }
 
             var createdIds = new List<Guid>();

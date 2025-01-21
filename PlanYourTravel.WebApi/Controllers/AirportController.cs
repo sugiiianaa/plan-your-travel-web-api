@@ -1,7 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanYourTravel.Application.Flights.Commands.CreateAirport;
-using PlanYourTravel.WebApi.Models;
+using PlanYourTravel.WebApi.Helper;
+using PlanYourTravel.WebApi.Models.Request;
+using PlanYourTravel.WebApi.Models.Response;
 
 namespace PlanYourTravel.WebApi.Controllers
 {
@@ -11,6 +14,9 @@ namespace PlanYourTravel.WebApi.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
+
+        // POST /api/airport/add-airport
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-airport")]
         public async Task<IActionResult> AddAirport(
             [FromBody] AddAirportRequest request,
@@ -26,10 +32,15 @@ namespace PlanYourTravel.WebApi.Controllers
 
             if (result.IsFailure)
             {
-                return BadRequest(new { code = result.Error?.Code, message = result.Error?.Message });
+                return BadRequest(ResponseFormatterHelper<AddAirportResponse?>.FormatFailedResponse(result.Error!.ErrorCode));
             }
 
-            return Created(string.Empty, new { Id = result.Value });
+            var response = new AddAirportResponse
+            {
+                AirportId = result.Value
+            };
+
+            return Created(string.Empty, ResponseFormatterHelper<AddAirportResponse>.FormatSuccessResponse(response));
         }
     }
 }

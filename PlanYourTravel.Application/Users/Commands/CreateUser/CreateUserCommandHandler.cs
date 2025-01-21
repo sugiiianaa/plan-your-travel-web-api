@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using PlanYourTravel.Application.Commons;
 using PlanYourTravel.Domain.Entities.UserAggregate;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Domain.ValueObjects;
@@ -21,14 +20,14 @@ namespace PlanYourTravel.Application.Users.Commands.CreateUser
             var emailResult = Email.Create(request.Email);
             if (emailResult.IsFailure)
             {
-                return Result.Failure<Guid>(ApplicationError.User.EmailInvalid());
+                return Result.Failure<Guid>(new Error(emailResult.Error!.ErrorCode));
             }
 
             var existingUser = await _userRepository.GetByEmailAsync(emailResult.Value, cancellationToken);
 
             if (existingUser is not null)
             {
-                return Result.Failure<Guid>(ApplicationError.User.EmailAlreadyRegistered());
+                return Result.Failure<Guid>(new Error("UserAlreadyExist"));
             }
 
             var hashedPassword = _passwordHasher.HashPassword(request.Password);

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PlanYourTravel.WebApi.Models
+namespace PlanYourTravel.WebApi.Models.Request
 {
     public class CreateFlightScheduleRequest
     {

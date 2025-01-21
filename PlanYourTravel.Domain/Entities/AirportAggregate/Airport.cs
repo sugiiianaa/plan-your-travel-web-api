@@ -9,7 +9,7 @@ namespace PlanYourTravel.Domain.Entities.AirportAggregate
         // EF private constructor
         public Airport() { }
 
-        private Airport(Guid id, string name, AirportCode code, Guid locationId, AirportFlightType flightType) : base(id)
+        private Airport(Guid id, string name, string code, Guid locationId, AirportFlightType flightType) : base(id)
         {
             Name = name;
             Code = code;
@@ -18,7 +18,7 @@ namespace PlanYourTravel.Domain.Entities.AirportAggregate
         }
 
         public string Name { get; private set; }
-        public AirportCode Code { get; private set; }
+        public string Code { get; private set; }
         public AirportFlightType FlightType { get; private set; }
 
         // Foreign Key
@@ -30,7 +30,7 @@ namespace PlanYourTravel.Domain.Entities.AirportAggregate
         public static Airport Create(
             Guid id,
             string name,
-            AirportCode code,
+            string code,
             Guid locationId,
             AirportFlightType flightType)
         {

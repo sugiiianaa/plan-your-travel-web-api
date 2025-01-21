@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanYourTravel.Application.Users.Commands.CreateUser;
 using PlanYourTravel.Application.Users.Commands.LoginUser;
-using PlanYourTravel.WebApi.Models;
+using PlanYourTravel.WebApi.Helper;
+using PlanYourTravel.WebApi.Models.Request;
+using PlanYourTravel.WebApi.Models.Response;
 
 namespace PlanYourTravel.WebApi.Controllers
 {
@@ -25,13 +27,17 @@ namespace PlanYourTravel.WebApi.Controllers
 
             var result = await _mediator.Send(command, cancellationToken);
 
-            // TODO : add more proper error
             if (result.IsFailure)
             {
-                return BadRequest(result.Error!);
+                return BadRequest(ResponseFormatterHelper<CreateUserResponse?>.FormatFailedResponse(result.Error!.ErrorCode));
             }
 
-            return Ok(new { Message = "user created successfully" });
+            var response = new CreateUserResponse
+            {
+                UserId = result.Value
+            };
+
+            return Ok(ResponseFormatterHelper<CreateUserResponse>.FormatSuccessResponse(response));
         }
 
         [HttpPost("login")]
@@ -45,13 +51,16 @@ namespace PlanYourTravel.WebApi.Controllers
 
             var result = await _mediator.Send(command, cancellationToken);
 
-            // TODO : add more proper error
             if (result.IsFailure)
             {
-                return BadRequest(result.Error);
+                return BadRequest(ResponseFormatterHelper<LoginUserResponse?>.FormatFailedResponse(result.Error!.ErrorCode));
             }
+            var response = new LoginUserResponse
+            {
+                Token = result.Value
+            };
 
-            return Ok(new { Token = result.Value });
+            return Ok(ResponseFormatterHelper<LoginUserResponse>.FormatSuccessResponse(response));
         }
 
         // GET /api/auth/user

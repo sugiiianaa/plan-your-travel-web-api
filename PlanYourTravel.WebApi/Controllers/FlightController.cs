@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlanYourTravel.Application.Flights.Commands.CreateFlightSchedule;
 using PlanYourTravel.Application.Flights.Commands.CreateFlightSeatClass;
 using PlanYourTravel.Application.Flights.Queries.GetFlightSchedule;
-using PlanYourTravel.WebApi.Models;
+using PlanYourTravel.WebApi.Models.Request;
 
 namespace PlanYourTravel.WebApi.Controllers
 {

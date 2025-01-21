@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.WebApi.Models
+﻿namespace PlanYourTravel.WebApi.Models.Request
 {
     public class GetFlightScheduleRequest
     {

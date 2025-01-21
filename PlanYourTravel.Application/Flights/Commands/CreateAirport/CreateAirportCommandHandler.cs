@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using PlanYourTravel.Domain.Entities.AirportAggregate;
-using PlanYourTravel.Domain.Enums;
 using PlanYourTravel.Domain.Repositories;
 using PlanYourTravel.Shared.DataTypes;
 
@@ -18,22 +17,20 @@ namespace PlanYourTravel.Application.Flights.Commands.CreateAirport
         {
             var location = await _locationRepository.GetByIdAsync(command.LocationId, cancellationToken);
 
-            // TODO : change this error message to use DomainError
             if (location == null)
             {
-                return Result.Failure<Guid>(new Error(
-                    "LocationNotFound",
-                    "The specified location does not exists"));
+                return Result.Failure<Guid>(new Error("LocationNotFound"));
             };
 
             var airport = Airport.Create(
                 Guid.NewGuid(),
                 command.Name,
-                (AirportCode)command.Code,
+                command.Code,
                 command.LocationId,
                 command.FlightType);
 
             await _airportRepository.AddAsync(airport, cancellationToken);
+            await _airportRepository.SaveChangesAsync(cancellationToken);
 
             return Result.Success(airport.Id);
         }

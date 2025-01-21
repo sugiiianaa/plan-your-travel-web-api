@@ -53,10 +53,10 @@ namespace PlanYourTravel.WebApi.Helper
                 }
                 else
                 {
-                    var soekarnoehatta = Airport.Create(Guid.NewGuid(), "Soekarno-Hatta International Airport", Domain.Enums.AirportCode.CGK, jakartaGuid, Domain.Enums.AirportFlightType.International);
-                    var changi = Airport.Create(Guid.NewGuid(), "Singapore Changi Airport", Domain.Enums.AirportCode.SIN, singaporeGuid, Domain.Enums.AirportFlightType.International);
-                    var aukland = Airport.Create(Guid.NewGuid(), "Auckland Airport", Domain.Enums.AirportCode.AKL, auklandGuid, Domain.Enums.AirportFlightType.International);
-                    var edmonton = Airport.Create(Guid.NewGuid(), "Edmonton International Airport", Domain.Enums.AirportCode.YEG, albertaGuid, Domain.Enums.AirportFlightType.International);
+                    var soekarnoehatta = Airport.Create(Guid.NewGuid(), "Soekarno-Hatta International Airport", "CGK", jakartaGuid, Domain.Enums.AirportFlightType.International);
+                    var changi = Airport.Create(Guid.NewGuid(), "Singapore Changi Airport", "SIN", singaporeGuid, Domain.Enums.AirportFlightType.International);
+                    var aukland = Airport.Create(Guid.NewGuid(), "Auckland Airport", "AKL", auklandGuid, Domain.Enums.AirportFlightType.International);
+                    var edmonton = Airport.Create(Guid.NewGuid(), "Edmonton International Airport", "YEG", albertaGuid, Domain.Enums.AirportFlightType.International);
                     dbContext.Airports.AddRange(soekarnoehatta, changi, aukland, edmonton);
                     await dbContext.SaveChangesAsync();
                 }

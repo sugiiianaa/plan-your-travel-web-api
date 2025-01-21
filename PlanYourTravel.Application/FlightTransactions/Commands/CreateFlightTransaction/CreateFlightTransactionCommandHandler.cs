@@ -23,14 +23,21 @@ namespace PlanYourTravel.Application.FlightTransactions.Commands.CreateFlightTra
 
             if (flightSeat == null)
             {
-                return Result.Failure<Guid>(new Error("FlightSeatNotFound", "Flight seat is not found"));
+                return Result.Failure<Guid>(new Error("FlightSeatNotFound"));
+            }
+
+            var seatsBookedAfterTransaction = flightSeat.SeatsBooked + request.NumberOfSeatBooked;
+
+            if (seatsBookedAfterTransaction > flightSeat.Capacity)
+            {
+                return Result.Failure<Guid>(new Error("BookingExceedCapacity"));
             }
 
             var userId = _getCurrentUser.UserId;
 
             if (userId == null)
             {
-                return Result.Failure<Guid>(new Error("FlightSeatNotFound", "Flight seat is not found"));
+                return Result.Failure<Guid>(new Error("FlightSeatNotFound"));
             }
 
             var totalCost = request.NumberOfSeatBooked * flightSeat.Price;
@@ -58,8 +65,6 @@ namespace PlanYourTravel.Application.FlightTransactions.Commands.CreateFlightTra
 
             await _flightTransactionRepository.SaveChangesAsync(cancellationToken);
 
-            // TODO : add endpoint to update the transaction status
-            // TODO : add logic to update seat capacity if the transaction success
             return Result.Success(transaction.Id);
         }
     }

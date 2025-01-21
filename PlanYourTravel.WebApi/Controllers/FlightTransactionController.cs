@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlanYourTravel.Application.FlightTransactions.Commands.CreateFlightTransaction;
 using PlanYourTravel.Application.FlightTransactions.Commands.PayFlightTransaction;
-using PlanYourTravel.WebApi.Models;
+using PlanYourTravel.WebApi.Models.Request;
 
 namespace PlanYourTravel.WebApi.Controllers
 {
