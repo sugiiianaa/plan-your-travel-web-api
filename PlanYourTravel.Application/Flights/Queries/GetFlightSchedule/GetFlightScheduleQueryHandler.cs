@@ -8,11 +8,11 @@ namespace PlanYourTravel.Application.Flights.Queries.GetFlightSchedule
 {
     public sealed class GetFlightScheduleQueryHandler(
         IFlightScheduleRepository flightScheduleRepository)
-                : IRequestHandler<GetFlightScheduleQuery, Result<FlightSchedulesPageDto>>
+        : IRequestHandler<GetFlightScheduleQuery, Result<PaginatedResultDto<FlightScheduleDto>>>
     {
         private readonly IFlightScheduleRepository _flightScheduleRepository = flightScheduleRepository;
 
-        public async Task<Result<FlightSchedulesPageDto>> Handle(
+        public async Task<Result<PaginatedResultDto<FlightScheduleDto>>> Handle(
             GetFlightScheduleQuery request,
             CancellationToken cancellationToken)
         {
@@ -20,20 +20,34 @@ namespace PlanYourTravel.Application.Flights.Queries.GetFlightSchedule
                 request.DepartureDate,
                 request.DepartureAirportId,
                 request.ArrivalAirportId,
-                request.LastSeendId,
+                request.LastSeenId,
                 request.PageSize,
                 cancellationToken);
 
-            var lastSeenId = flightSchedules.Any() ? flightSchedules.LastOrDefault()!.Id : request.LastSeendId;
-
-            var flightScheduleDtos = new FlightSchedulesPageDto
+            if (flightSchedules == null || flightSchedules.Count == 0)
             {
-                Schedules = flightSchedules,
+                return Result.Failure<PaginatedResultDto<FlightScheduleDto>>(new Error("FlightScheduleNotFound"));
+            }
+
+            var lastSeenId = flightSchedules.Any() ? flightSchedules.LastOrDefault()!.Id : request.LastSeenId;
+
+            var paginatedFlightScheduleDtos = new PaginatedResultDto<FlightScheduleDto>
+            {
+                Items = flightSchedules.Select(fs => new FlightScheduleDto
+                {
+                    Id = fs.Id,
+                    FlightNumber = fs.FlightNumber,
+                    DepartureDateTime = fs.DepartureDateTime,
+                    ArrivalAiportId = fs.ArrivalAirportId,
+                    DepartureAirportId = fs.ArrivalAirportId,
+                    ArrivalDateTime = fs.ArrivalDateTime,
+                    AirlineId = fs.AirlineId,
+                }).ToList(),
                 TotalCount = totalCount,
-                NextLastSeenId = lastSeenId,
+                LastSeenId = lastSeenId,
             };
 
-            return Result.Success(flightScheduleDtos);
+            return Result.Success(paginatedFlightScheduleDtos);
         }
     }
 }

@@ -7,5 +7,6 @@ namespace PlanYourTravel.Domain.Repositories
     public interface IUserRepository : IRepository<User>
     {
         Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken);
+        Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

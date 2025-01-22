@@ -8,6 +8,6 @@ namespace PlanYourTravel.Application.Flights.Queries.GetFlightSchedule
         DateTime DepartureDate,
         Guid DepartureAirportId,
         Guid ArrivalAirportId,
-        Guid LastSeendId,
-        int PageSize) : IRequest<Result<FlightSchedulesPageDto>>;
+        Guid LastSeenId,
+        int PageSize) : IRequest<Result<PaginatedResultDto<FlightScheduleDto>>>;
 }

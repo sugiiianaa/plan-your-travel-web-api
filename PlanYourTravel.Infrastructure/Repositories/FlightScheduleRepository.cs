@@ -52,6 +52,8 @@ namespace PlanYourTravel.Infrastructure.Repositories
             int pageSize,
             CancellationToken cancellationToken)
         {
+            departureDate = DateTime.SpecifyKind(departureDate, DateTimeKind.Utc);
+
             // Base query: filter by departure date and airports.
             IQueryable<FlightSchedule> query = _appDbContext.FlightSchedules
                 .Where(fs =>
@@ -59,11 +61,15 @@ namespace PlanYourTravel.Infrastructure.Repositories
                     fs.DepartureAirportId == departureAirportId &&
                     fs.ArrivalAirportId == arrivalAirportId);
 
-            int totalCount = await query.CountAsync(cancellationToken);
+            int totalCount = -1;
 
             if (lastSeenId != Guid.Empty)
             {
                 query = query.Where(fs => fs.Id.CompareTo(lastSeenId) > 0);
+            }
+            else
+            {
+                totalCount = await query.CountAsync(cancellationToken);
             }
 
             // Order by Id for stable pagination, then take pageSize items.

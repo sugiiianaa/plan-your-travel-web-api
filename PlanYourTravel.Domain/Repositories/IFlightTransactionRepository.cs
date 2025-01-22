@@ -9,8 +9,10 @@ namespace PlanYourTravel.Domain.Repositories
             Guid id,
             CancellationToken cancellationToken);
 
-        public Task<IList<FlightTransaction?>> GetByUserIdAsync(
+        public Task<(IList<FlightTransaction> items, int totalCount)> GetAllByUserIdAsync(
             Guid userId,
+            Guid lastSeenId,
+            int pageSize,
             CancellationToken cancellationToken);
     }
 }

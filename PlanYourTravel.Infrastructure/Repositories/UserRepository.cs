@@ -43,5 +43,10 @@ namespace PlanYourTravel.Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Email.Value == email.Value, cancellationToken);
         }
 
+        public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _appDbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        }
     }
 }

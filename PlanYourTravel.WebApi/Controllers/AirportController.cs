@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PlanYourTravel.Application.Airports.Queries;
+using PlanYourTravel.Application.Dtos;
 using PlanYourTravel.Application.Flights.Commands.CreateAirport;
 using PlanYourTravel.WebApi.Helper;
 using PlanYourTravel.WebApi.Models.Request;
@@ -14,6 +16,25 @@ namespace PlanYourTravel.WebApi.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
+        // GET /api/airport
+        [HttpGet]
+        public async Task<IActionResult> GetAllAiport(
+            [FromQuery] GetAirportRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = new GetAllAirportQuery(
+                request.LastSeenId,
+                request.PageSize);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ResponseFormatterHelper<PaginatedResultDto<AirportDto>>.FormatFailedResponse(result.Error!.ErrorCode));
+            }
+
+            return Ok(result.Value);
+        }
 
         // POST /api/airport/add-airport
         [Authorize(Roles = "Admin")]
