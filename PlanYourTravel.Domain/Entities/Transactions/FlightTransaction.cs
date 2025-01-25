@@ -112,5 +112,10 @@ namespace PlanYourTravel.Domain.Entities.Transactions
 
             AddDomainEvent(paidEvent);
         }
+
+        public void MarkAsExpired()
+        {
+            Status = TransactionStatus.Expired;
+        }
     }
 }

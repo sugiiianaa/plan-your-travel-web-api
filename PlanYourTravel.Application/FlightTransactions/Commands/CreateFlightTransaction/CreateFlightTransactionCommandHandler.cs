@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Hangfire;
+using MediatR;
 using PlanYourTravel.Domain.Entities.Transactions;
 using PlanYourTravel.Domain.Enums;
 using PlanYourTravel.Domain.Repositories;
@@ -48,6 +49,8 @@ namespace PlanYourTravel.Application.FlightTransactions.Commands.CreateFlightTra
             // TODO : add validation for paidAmount in domain level
             var paidAmount = totalCost - discount;
 
+            // TODO : apply background process to expire the transaction after 24 h
+            // you could use hangfire library
             var transaction = FlightTransaction.Create(
                 Guid.NewGuid(),
                 userId.Value,
@@ -65,7 +68,31 @@ namespace PlanYourTravel.Application.FlightTransactions.Commands.CreateFlightTra
 
             await _flightTransactionRepository.SaveChangesAsync(cancellationToken);
 
+            var client = new BackgroundJobClient();
+
+            client.Schedule(() => MarkTransactionAsExpired(transaction.Id, default), TimeSpan.FromSeconds(10));
+
             return Result.Success(transaction.Id);
+        }
+
+        public async Task<bool> MarkTransactionAsExpired(Guid transactionId, CancellationToken cancellationToken)
+        {
+            var transaction = await _flightTransactionRepository.GetByIdAsync(transactionId, cancellationToken);
+
+            if (transaction == null)
+            {
+                return false;
+            }
+
+            transaction?.MarkAsExpired();
+
+            await _flightTransactionRepository.UpdateAsync(transaction!, cancellationToken);
+
+            await _flightTransactionRepository.SaveChangesAsync(cancellationToken);
+
+            Console.WriteLine("--- Hangfire task for MarkTransactionAsExpired fired!");
+
+            return true;
         }
     }
 }

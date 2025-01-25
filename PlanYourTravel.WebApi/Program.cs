@@ -1,4 +1,6 @@
 using System.Text;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +15,7 @@ using PlanYourTravel.Infrastructure.Services.TokenGenerator;
 using PlanYourTravel.Shared.AppSettings;
 using PlanYourTravel.WebApi.Helper;
 
+// TODO : host it on railway
 var builder = WebApplication.CreateBuilder(args);
 
 // Check if seed argument is provided
@@ -34,6 +37,9 @@ await ApplyMigrationsAndSeedData(app, shouldSeed);
 // Configure Middleware and Start the App
 ConfigureMiddleware(app);
 
+// Using hangfire dashboard
+app.UseHangfireDashboard("/hangfire");
+
 app.Run();
 
 
@@ -41,6 +47,28 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, ConfigurationManager configuration, string jwtSecret, string connectionString)
 {
+    // Hangfire service
+    services.AddHangfire(config =>
+    {
+        config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(
+                bootstrapperOptions =>
+                {
+                    bootstrapperOptions.UseNpgsqlConnection(connectionString);
+                },
+                new PostgreSqlStorageOptions
+                {
+                    QueuePollInterval = TimeSpan.FromSeconds(15),
+                    InvisibilityTimeout = TimeSpan.FromMinutes(5),
+                }
+            );
+    });
+
+    services.AddHangfireServer();
+
     // Configure Jwt Settings
     services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
