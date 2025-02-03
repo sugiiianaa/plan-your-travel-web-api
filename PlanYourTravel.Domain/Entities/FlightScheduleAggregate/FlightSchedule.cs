@@ -1,5 +1,5 @@
-﻿using PlanYourTravel.Domain.Commons.Exceptions;
-using PlanYourTravel.Domain.Commons.Primitives;
+﻿using PlanYourTravel.Domain.Common.Exceptions;
+using PlanYourTravel.Domain.Common.Primitives;
 using PlanYourTravel.Domain.Entities.AirlineAggregate;
 using PlanYourTravel.Domain.Entities.AirportAggregate;
 using PlanYourTravel.Domain.Enums;
@@ -45,7 +45,7 @@ namespace PlanYourTravel.Domain.Entities.FlightScheduleAggregate
 
         // Relationship to FlightSeatClasses
         public ICollection<FlightSeatClass> SeatClasses { get; private set; }
-            = new List<FlightSeatClass>();
+            = [];
 
         public static FlightSchedule Create(
             Guid id,

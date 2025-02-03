@@ -2,7 +2,7 @@
 {
     public class PaginatedResultDto<T>
     {
-        public IList<T> Items { get; set; } = new List<T>();
+        public IList<T> Items { get; set; } = [];
 
         public int TotalCount { get; set; }
 

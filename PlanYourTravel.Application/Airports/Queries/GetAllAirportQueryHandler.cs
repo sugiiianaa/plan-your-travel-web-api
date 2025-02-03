@@ -14,14 +14,14 @@ namespace PlanYourTravel.Application.Airports.Queries
 
         public async Task<Result<PaginatedResultDto<AirportDto>>> Handle(GetAllAirportQuery query, CancellationToken cancellationToken)
         {
-            (IList<Airport> airports, int totalCount) = await _airportRepository.GetAllAsync(query.lastSeenId, query.PageSize, cancellationToken);
+            (IList<Airport> airports, int totalCount) = await _airportRepository.GetAllAsync(query.LastSeenId, query.PageSize, cancellationToken);
 
-            if (airports == null || airports.Count == 0)
+            if (airports == null || !airports.Any())
             {
                 return Result.Failure<PaginatedResultDto<AirportDto>>(new Error("AirportNotFound"));
             }
 
-            var lastSeenId = airports.Any() ? airports.Last().Id : query.lastSeenId;
+            var lastSeenId = airports.Any() ? airports.Last().Id : Guid.Empty;
 
             var paginatedAirportDtos = new PaginatedResultDto<AirportDto>
             {

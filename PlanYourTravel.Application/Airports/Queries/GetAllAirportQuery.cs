@@ -4,5 +4,5 @@ using PlanYourTravel.Shared.DataTypes;
 
 namespace PlanYourTravel.Application.Airports.Queries
 {
-    public sealed record GetAllAirportQuery(Guid lastSeenId, int PageSize) : IRequest<Result<PaginatedResultDto<AirportDto>>>;
+    public sealed record GetAllAirportQuery(Guid LastSeenId, int PageSize) : IRequest<Result<PaginatedResultDto<AirportDto>>>;
 }

@@ -1,4 +1,4 @@
-﻿using PlanYourTravel.Domain.Commons.Primitives;
+﻿using PlanYourTravel.Domain.Common.Primitives;
 using PlanYourTravel.Domain.Entities.LocationAggregate;
 using PlanYourTravel.Domain.Enums;
 
@@ -36,17 +36,17 @@ namespace PlanYourTravel.Domain.Entities.AirportAggregate
         {
             if (id == Guid.Empty)
             {
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(nameof(id));
             }
 
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             if (locationId == Guid.Empty)
             {
-                throw new ArgumentNullException("location");
+                throw new ArgumentNullException(nameof(locationId));
             }
 
             return new Airport(id, name, code, locationId, flightType);
@@ -59,12 +59,12 @@ namespace PlanYourTravel.Domain.Entities.AirportAggregate
         {
             if (string.IsNullOrEmpty(newName))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(newName));
             }
 
             if (locationId == Guid.Empty)
             {
-                throw new ArgumentNullException("location");
+                throw new ArgumentNullException(nameof(locationId));
             }
 
             Name = newName;

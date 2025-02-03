@@ -5,6 +5,6 @@ using PlanYourTravel.Shared.DataTypes;
 namespace PlanYourTravel.Application.FlightTransactions.Queries.GetFlightTransaction
 {
     public sealed record GetFlightTransactionQuery(
-        Guid lastSeenId,
-        int pageSize) : IRequest<Result<PaginatedResultDto<FlightTransactionDto>>>;
+        Guid LastSeenId,
+        int PageSize) : IRequest<Result<PaginatedResultDto<FlightTransactionDto>>>;
 }

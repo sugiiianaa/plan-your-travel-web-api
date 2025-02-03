@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PlanYourTravel.Domain.Common.Primitives;
-using PlanYourTravel.Domain.Commons.Primitives;
 using PlanYourTravel.Domain.Entities.AirlineAggregate;
 using PlanYourTravel.Domain.Entities.AirportAggregate;
 using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
@@ -12,18 +11,11 @@ using PlanYourTravel.Domain.Repositories.Abstraction;
 
 namespace PlanYourTravel.Infrastructure.Persistence
 {
-    public class AppDbContext : DbContext, IUnitOfWork
+    public class AppDbContext(
+        DbContextOptions<AppDbContext> options,
+        IMediator? mediator = null) : DbContext(options), IUnitOfWork
     {
-        private readonly IMediator? _mediator;
-
-        public AppDbContext(
-            DbContextOptions<AppDbContext> options,
-            IMediator? mediator = null)
-            : base(options)
-        {
-            _mediator = mediator;
-        }
-
+        private readonly IMediator? _mediator = mediator;
 
         public DbSet<User> Users { get; set; }
         public DbSet<Airline> Airlines { get; set; } = null!;
@@ -127,7 +119,7 @@ namespace PlanYourTravel.Infrastructure.Persistence
             {
                 var domainEntities = ChangeTracker
                    .Entries<IHasDomainEvents>()
-                   .Where(e => e.Entity.DomainEvents.Any())
+                   .Where(e => e.Entity.DomainEvents.Count != 0)
                    .Select(e => e.Entity)
                    .ToList();
 

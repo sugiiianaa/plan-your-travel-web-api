@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Domain.Commons.Exceptions
+﻿namespace PlanYourTravel.Domain.Common.Exceptions
 {
     public class DomainException : Exception
     {

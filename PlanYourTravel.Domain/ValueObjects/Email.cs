@@ -1,4 +1,4 @@
-﻿using PlanYourTravel.Domain.Commons.Primitives;
+﻿using PlanYourTravel.Domain.Common.Primitives;
 using PlanYourTravel.Domain.Errors;
 using PlanYourTravel.Shared.DataTypes;
 

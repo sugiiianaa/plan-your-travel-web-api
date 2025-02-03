@@ -1,4 +1,4 @@
-﻿namespace PlanYourTravel.Domain.Commons.Primitives
+﻿namespace PlanYourTravel.Domain.Common.Primitives
 {
     public abstract class AuditableEntity : Entity
     {

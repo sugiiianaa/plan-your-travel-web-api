@@ -29,8 +29,8 @@ namespace PlanYourTravel.Application.FlightTransactions.Queries.GetFlightTransac
 
             (IList<FlightTransaction> flightTransactions, int totalCount) = await _flightTransactionRepository.GetAllByUserIdAsync(
                 userId!.Value,
-                request.lastSeenId,
-                request.pageSize,
+                request.LastSeenId,
+                request.PageSize,
                 cancellationToken);
 
             if (flightTransactions == null || flightTransactions.Count == 0)
@@ -38,7 +38,7 @@ namespace PlanYourTravel.Application.FlightTransactions.Queries.GetFlightTransac
                 return Result.Failure<PaginatedResultDto<FlightTransactionDto>>(new Error("FlightTransactionNotFound"));
             }
 
-            var lastSeenId = flightTransactions.Any() ? flightTransactions.LastOrDefault()!.Id : request.lastSeenId;
+            var lastSeenId = flightTransactions.Any() ? flightTransactions.LastOrDefault()!.Id : request.LastSeenId;
 
             var paginatedFlightTransactionDtos = new PaginatedResultDto<FlightTransactionDto>
             {

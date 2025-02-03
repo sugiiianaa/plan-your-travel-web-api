@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using PlanYourTravel.Domain.Common.Exceptions;
 using PlanYourTravel.Domain.Common.Primitives;
-using PlanYourTravel.Domain.Commons.Exceptions;
 using PlanYourTravel.Domain.Entities.FlightScheduleAggregate;
 using PlanYourTravel.Domain.Enums;
 using PlanYourTravel.Domain.Events;
@@ -9,7 +9,7 @@ namespace PlanYourTravel.Domain.Entities.Transactions
 {
     public class FlightTransaction : Transaction, IHasDomainEvents
     {
-        private readonly List<INotification> _domainEvents = new();
+        private readonly List<INotification> _domainEvents = [];
         public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
 
         private void AddDomainEvent(INotification eventItem)
